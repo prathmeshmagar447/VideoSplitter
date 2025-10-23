@@ -1,0 +1,30 @@
+# Build artifacts
+video_splitter
+video_splitter.exe
+video_splitter_debug
+*.o
+
+# Temporary files
+*.tmp
+duration.txt
+
+# Output directories
+output_clips/
+input/
+test_output/
+gui_test/
+
+# OS specific
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE files
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+*.log
+ffmpeg*.log
