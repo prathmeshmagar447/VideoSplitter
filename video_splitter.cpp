@@ -110,23 +110,25 @@ int main(int argc, char* argv[]) {
     for (const auto& input_path : video_files) {
         std::cout << "Processing: " << input_path << "\n";
 
+        // Extract video name for subfolder
+        std::string::size_type last_slash = input_path.find_last_of('/');
+        std::string filename_with_ext = (last_slash != std::string::npos) ? input_path.substr(last_slash + 1) : input_path;
+        std::string::size_type last_dot = filename_with_ext.find_last_of('.');
+        std::string video_name = (last_dot != std::string::npos) ? filename_with_ext.substr(0, last_dot) : filename_with_ext;
+        std::string subfolder = output_folder + "/" + video_name;
+
+        // Create subfolder for this video
+        std::string mkdir_cmd = "mkdir -p \"" + subfolder + "\"";
+        if (std::system(mkdir_cmd.c_str()) != 0) {
+            std::cerr << "Failed to create output directory.\n";
+            return 1;
+        }
+
         // Skip to next iteration if file doesn't exist
         if (access(input_path.c_str(), F_OK) != 0) {
             std::cout << "File not found, skipping...\n\n";
             continue;
         }
-
-    if (access(input_path.c_str(), F_OK) != 0) {
-        std::cerr << "Error: Input video does not exist.\n";
-        return 1;
-    }
-
-    // Create output directory
-    std::string mkdir_cmd = "mkdir -p \"" + output_folder + "\"";
-    if (std::system(mkdir_cmd.c_str()) != 0) {
-        std::cerr << "Failed to create output directory.\n";
-        return 1;
-    }
 
     // Get video duration using ffprobe
     std::string probe_cmd = "ffprobe -v error -show_entries format=duration "
@@ -180,7 +182,7 @@ int main(int argc, char* argv[]) {
         double clip_duration = end - start;
 
         std::ostringstream filename;
-        filename << output_folder << "/clip_" << std::setw(3) << std::setfill('0') << (idx + 1) << "_"
+        filename << subfolder << "/clip_" << std::setw(3) << std::setfill('0') << (idx + 1) << "_"
                  << std::fixed << std::setprecision(1) << start << "s-" << end << "s.mp4";
 
         std::ostringstream cmd;
@@ -222,7 +224,7 @@ int main(int argc, char* argv[]) {
 
     // Performance breakdown
     std::cout << "\n🎉 Processing complete!\n";
-    std::cout << "📁 Output folder: " << output_folder << "\n";
+    std::cout << "📁 Output folder: " << subfolder << "\n";
     std::cout << "⏱️  Total time: " << std::fixed << std::setprecision(2) << duration_sec << " seconds\n";
     std::cout << "🎬 Clips created: " << processed_clips << "/" << num_clips << "\n";
 
