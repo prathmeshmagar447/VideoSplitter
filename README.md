@@ -1,14 +1,15 @@
-# 🎬 C++ Video Splitter
+# 🎬 C++ Video Splitter with Effects
 
-A high-performance C++ application that splits videos into random-duration clips (3-7 seconds) with gaps (5-10 seconds) between them, optimized for anime recap creation.
+A high-performance C++ application that creates anime recap videos with advanced effects: random zoom/pan movements, fade transitions, cross dissolve, and audio synchronization.
 
 ## ⚡ Features
 
-- **Lightning Fast**: Uses FFmpeg stream copying for maximum speed
+- **Advanced Video Effects**: Random zoom/pan, fade in/out, cross dissolve transitions
+- **Two-Stage Processing**: Effects application + audio sync
 - **Random Clip Durations**: Each clip is 3-7 seconds long (randomized)
-- **Smart Gaps**: 5-10 second gaps between clips for recap-style pacing
-- **Audio Muted**: Perfect for voiceover replacement
-- **Parallel Processing**: Utilizes all CPU cores
+- **Seamless Transitions**: No gaps between clips with smooth cross dissolve
+- **Audio Synchronization**: Automatically sync video speed to match provided audio
+- **Post-Processing Effects**: Color grading, sharpening, and enhancement
 - **Batch Processing**: Process multiple videos automatically
 - **Progress Tracking**: Real-time progress with performance metrics
 
@@ -56,17 +57,16 @@ g++ -O3 -std=c++17 video_splitter.cpp -o video_splitter.exe
 ```
 
 ### Workflow
-1. Place video files (.mp4, .avi, .mov, .mkv, .webm) in the `./input` folder
+1. Place video files (.mp4, .avi, .mov, .mkv, .webm) and audio files (.mp3, .wav, .m4a, .aac, .flac) in the `./input` folder
 2. Run `./video_splitter`
-3. Find processed clips in `./output_clips` folder
+3. Stage 1: Creates recap video with effects
+4. Stage 2: Syncs with audio and produces final output
 
 ### Output Structure
 ```
-./output_clips/
-├── clip_001_0.0s-4.2s.mp4    # 4.2 second clip
-├── clip_002_9.2s-15.8s.mp4   # 6.6 second clip
-├── clip_003_25.8s-31.1s.mp4  # 5.3 second clip
-└── ...
+./output_clips/[video_name]/
+├── recap_with_effects.mp4    # Intermediate recap with effects
+└── final_output.mp4          # Final synced video with audio
 ```
 
 ## ⚙️ Configuration
@@ -75,13 +75,19 @@ Edit the `Config` struct in `video_splitter.cpp` to customize:
 
 ```cpp
 struct Config {
+    // Video processing settings
     double min_clip_duration = 3.0;  // Minimum clip length
     double max_clip_duration = 7.0;  // Maximum clip length
-    double min_gap = 5.0;           // Minimum gap between clips
-    double max_gap = 10.0;          // Maximum gap between clips
-    bool mute_audio = true;         // Always mute audio
-    bool use_stream_copy = true;    // Use fast stream copying
-    int max_threads = 0;            // 0 = auto-detect CPU cores
+
+    // Effects settings
+    bool enable_effects = true;         // Enable zoom/pan/fade/cross dissolve
+    double cross_dissolve_duration = 1.0; // Cross dissolve duration in seconds
+    bool enable_audio_sync = true;      // Enable audio sync processing
+    double trim_end_seconds = 60.0;     // Remove last N seconds from video
+    int max_clips = 10;                 // Maximum clips to process (avoid complexity)
+
+    // Performance settings
+    int max_threads = 0;                // 0 = auto-detect CPU cores
 };
 ```
 
@@ -126,6 +132,14 @@ If you encounter issues:
 4. Open an issue with your system details and error logs
 
 ## 📊 Changelog
+
+### v2.0.0
+- Added advanced video effects: random zoom/pan, fade in/out, cross dissolve
+- Two-stage processing: effects application + audio synchronization
+- Automatic video speed adjustment to match audio duration
+- Post-processing effects: color grading, sharpening
+- Seamless clip transitions without gaps
+- Audio file detection and sync
 
 ### v1.0.0
 - Initial release

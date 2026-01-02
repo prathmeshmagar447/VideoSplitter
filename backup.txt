@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
             if (filename != "." && filename != "..") {
                 std::string ext = filename.substr(filename.find_last_of("."));
                 std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-                if (ext == ".mp4" || ext == ".avi" || ext == ".mov" || ext == ".mkv" || ext == ".webm" || ext == ".ts") {
+                if (ext == ".mp4" || ext == ".avi" || ext == ".mov" || ext == ".mkv" || ext == ".webm") {
                     video_files.push_back(input_folder + "/" + filename);
                 }
             }
@@ -96,7 +96,7 @@ int main(int argc, char* argv[]) {
 
     if (video_files.empty()) {
         std::cout << "No video files found in " << input_folder << "\n";
-        std::cout << "Please place video files (.mp4, .avi, .mov, .mkv, .webm, .ts) in the input folder.\n";
+        std::cout << "Please place video files (.mp4, .avi, .mov, .mkv, .webm) in the input folder.\n";
         return 1;
     }
 
